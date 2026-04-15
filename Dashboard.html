@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Production Dashboard</title>
+</head>
+<body>
+
+<h2>Live Production Data</h2>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Job</th>
+      <th>Lot</th>
+      <th>Weight</th>
+      <th>Size</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody id="data"></tbody>
+</table>
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+
+import { getDatabase, ref, onValue } 
+from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "bead-wire-dc3b5.firebaseapp.com",
+  databaseURL: "https://bead-wire-dc3b5-default-rtdb.firebaseio.com",
+  projectId: "bead-wire-dc3b5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const dataRef = ref(db, "production");
+
+onValue(dataRef, (snapshot) => {
+  const data = snapshot.val();
+  const table = document.getElementById("data");
+
+  table.innerHTML = "";
+
+  for (let id in data) {
+    const row = `
+      <tr>
+        <td>${data[id].job}</td>
+        <td>${data[id].lot}</td>
+        <td>${data[id].weight}</td>
+        <td>${data[id].size}</td>
+        <td>${data[id].time}</td>
+      </tr>
+    `;
+    table.innerHTML += row;
+  }
+});
+
+</script>
+
+</body>
+</html>
